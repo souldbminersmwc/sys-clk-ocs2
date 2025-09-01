@@ -13,6 +13,7 @@
 
 #include "ui/gui/fatal_gui.h"
 #include "ui/gui/main_gui.h"
+#include "rgltr_services.h"  // for extern Service g_rgltrSrv, etc.
 
 class AppOverlay : public tsl::Overlay
 {
@@ -20,7 +21,12 @@ class AppOverlay : public tsl::Overlay
         AppOverlay() {}
         ~AppOverlay() {}
 
+        //virtual void initServices() override {
+        //    rgltrInitialize();
+        //}
+
         virtual void exitServices() override {
+            rgltrExit();
             sysclkIpcExit();
         }
 
@@ -34,7 +40,7 @@ class AppOverlay : public tsl::Overlay
             if(!sysclkIpcRunning())
             {
                 return initially<FatalGui>(
-                    "sys-clk is not running.\n\n"
+                    "sys-clk-ocs2 is not running.\n\n"
                     "\n"
                     "Please make sure it is correctly\n\n"
                     "installed and enabled.",
@@ -45,7 +51,7 @@ class AppOverlay : public tsl::Overlay
             if(R_FAILED(sysclkIpcInitialize()) || R_FAILED(sysclkIpcGetAPIVersion(&apiVersion)))
             {
                 return initially<FatalGui>(
-                    "Could not connect to sys-clk.\n\n"
+                    "Could not connect to sys-clk-ocs2.\n\n"
                     "\n"
                     "Please make sure it is correctly\n\n"
                     "installed and enabled.",
@@ -57,7 +63,7 @@ class AppOverlay : public tsl::Overlay
             {
                 return initially<FatalGui>(
                     "Overlay not compatible with\n\n"
-                    "the running sys-clk version.\n\n"
+                    "the running sys-clk-ocs2 version.\n\n"
                     "\n"
                     "Please make sure everything is\n\n"
                     "installed and up to date.",

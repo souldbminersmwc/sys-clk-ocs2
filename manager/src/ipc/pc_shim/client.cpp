@@ -59,6 +59,10 @@ Result sysclkIpcInitialize()
         g_server->AddFreq(SysClkModule_MEM, 1331200000);
         g_server->AddFreq(SysClkModule_MEM, 1600000000);
 
+        // g_server->AddFreq(SysClkModule_CPU, 204000000);
+        // g_server->AddFreq(SysClkModule_CPU, 306000000);
+        // g_server->AddFreq(SysClkModule_CPU, 408000000);
+        // g_server->AddFreq(SysClkModule_CPU, 510000000);
         g_server->AddFreq(SysClkModule_CPU, 612000000);
         g_server->AddFreq(SysClkModule_CPU, 714000000);
         g_server->AddFreq(SysClkModule_CPU, 816000000);

@@ -26,14 +26,19 @@ DATA		:=	data
 INCLUDES	:=	../common/include
 EXEFS_SRC	:=	exefs_src
 
-APP_TITLE	:=	sys-clk
+APP_TITLE	:=	sys-clk-ocs2
 NO_ICON		:=	1
+
+# This location should reflect where you place the libultrahand directory (lib can vary between projects).
+include ${TOPDIR}/lib/libultrahand/ultrahand.mk
+
 
 #---------------------------------------------------------------------------------
 # version control constants
 #---------------------------------------------------------------------------------
-TARGET_VERSION	:= $(shell git describe --dirty --always --tags)
-APP_VERSION		:= $(TARGET_VERSION)
+#TARGET_VERSION	:= $(shell git describe --dirty --always --tags)
+APP_VERSION		:= 2.0.1+r11
+TARGET_VERSION := $(APP_VERSION)
 
 #---------------------------------------------------------------------------------
 # options for code generation
@@ -42,23 +47,32 @@ DEFINES	:=	-DDISABLE_IPC -DTARGET="\"$(TARGET)\"" -DTARGET_VERSION="\"$(TARGET_V
 
 ARCH	:=	-march=armv8-a+crc+crypto -mtune=cortex-a57 -mtp=soft -fPIE
 
-CFLAGS	:=	-g -Wall -O2 -ffunction-sections \
+CFLAGS	:=	-Os -Wall -flto -fdata-sections -ffunction-sections -fno-rtti -fno-common \
 			$(ARCH) $(DEFINES)
 
 CFLAGS	+=	$(INCLUDE) -D__SWITCH__
+
+# Enable appearance overriding
+UI_OVERRIDE_PATH := /config/sys-clk/
+CFLAGS += -DUI_OVERRIDE_PATH="\"$(UI_OVERRIDE_PATH)\""
+
+# Disable fstream
+#NO_FSTREAM_DIRECTIVE := 1
+#CFLAGS += -DNO_FSTREAM_DIRECTIVE=$(NO_FSTREAM_DIRECTIVE)
+
 
 CXXFLAGS	:= $(CFLAGS) -fno-exceptions -std=gnu++20
 
 ASFLAGS	:=	-g $(ARCH)
 LDFLAGS	=	-specs=$(DEVKITPRO)/libnx/switch.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
-LIBS	:= -lnx
+LIBS := -lcurl -lz -lzzip -lmbedtls -lmbedx509 -lmbedcrypto -ljansson -lnx
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
 # include and lib
 #---------------------------------------------------------------------------------
-LIBDIRS	:= $(PORTLIBS) $(LIBNX) $(TOPDIR)/lib/tesla
+LIBDIRS	:= $(PORTLIBS) $(LIBNX)
 
 #---------------------------------------------------------------------------------
 # no real need to edit anything past this point unless you need to add additional
@@ -136,6 +150,8 @@ all: $(OUTPUT).ovl
 $(OUTPUT).ovl: $(OUTPUT).elf $(OUTPUT).nacp
 	@elf2nro $< $@ --nacp=$(OUTPUT).nacp
 	@echo "built ... $(notdir $(OUTPUT).ovl)"
+	@printf 'ULTR' >> $@
+	@printf "Ultrahand signature has been added.\n"
 
 $(OUTPUT).elf: $(OFILES)
 

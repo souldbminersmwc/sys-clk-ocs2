@@ -10,6 +10,7 @@
 
 #pragma once
 
+#include "../../rgltr_services.h"
 #include "../../ipc.h"
 #include "base_gui.h"
 
@@ -18,13 +19,23 @@ class BaseMenuGui : public BaseGui
     protected:
         SysClkContext* context;
         std::uint64_t lastContextUpdate;
-        tsl::elm::List* listElement;
+        std::uint32_t cpuVoltageUv;
+        std::uint32_t gpuVoltageUv;
+        std::uint32_t emcVoltageUv;
+		std::uint32_t socVoltageUv; //add soc voltage
+		std::uint32_t vddVoltageUv;//add vdd2 voltage
 
     public:
         BaseMenuGui();
         ~BaseMenuGui();
         void preDraw(tsl::gfx::Renderer* renderer) override;
+        tsl::elm::List* listElement;
         tsl::elm::Element* baseUI() override;
         void refresh() override;
         virtual void listUI() = 0;
+
+    private:
+        char displayStrings[17][32];  // Pre-formatted display strings
+        tsl::Color tempColors[3];     // Pre-computed temperature colors
+        bool isUsingEOS;
 };

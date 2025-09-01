@@ -43,8 +43,8 @@ SOURCES		:=	src ../common/src ../common/src/client
 RESOURCES	:=	resources
 DATA		:=	data
 INCLUDES	:=	../common/include
-APP_TITLE	:=	sys-clk manager
-APP_AUTHOR	:=	RetroNX Team
+APP_TITLE	:=	sys-clk-OCS2 MAnager
+APP_AUTHOR	:=	Souldbminer, meha, b0rd2dEAth and RetroNX Team
 
 ROMFS				:=	$(BUILD)/romfs
 BOREALIS_PATH		:=	lib/borealis

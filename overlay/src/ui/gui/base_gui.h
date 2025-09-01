@@ -11,8 +11,13 @@
 #pragma once
 
 #include <tesla.hpp>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <algorithm>
 
 #include "../style.h"
+#include "../../ipc.h"
 
 class BaseGui : public tsl::Gui
 {
@@ -24,4 +29,10 @@ class BaseGui : public tsl::Gui
         tsl::elm::Element* createUI() override;
         virtual tsl::elm::Element* baseUI() = 0;
         virtual void refresh() {}
+    private:
+        bool isUsingEOS;
 };
+
+
+extern std::string getVersionString();
+extern bool usingEOS();
