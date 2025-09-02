@@ -30,9 +30,9 @@ class BaseGui : public tsl::Gui
         virtual tsl::elm::Element* baseUI() = 0;
         virtual void refresh() {}
     private:
-        bool isUsingEOS;
+        bool isUsingOCS2;
 };
 
 
 extern std::string getVersionString();
-extern bool usingEOS();
+extern bool usingOCS2();

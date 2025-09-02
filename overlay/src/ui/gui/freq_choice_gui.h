@@ -26,7 +26,7 @@ class FreqChoiceGui : public BaseMenuGui
         std::uint32_t hzCount;
         SysClkModule module;  // Added
         FreqChoiceListener listener;
-        tsl::elm::ListItem* createFreqListItem(std::uint32_t hz, bool selected);
+        tsl::elm::ListItem* createFreqListItem(std::uint32_t hz, bool selected, int safety);
 
     public:
         FreqChoiceGui(std::uint32_t selectedHz, std::uint32_t* hzList, std::uint32_t hzCount, SysClkModule module, FreqChoiceListener listener);

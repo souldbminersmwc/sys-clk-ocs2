@@ -17,9 +17,9 @@
 
 void MainGui::listUI()
 {
-    bool isUsingEOS = usingEOS();
+    bool isUsingOCS2 = usingOCS2();
 
-    if (!isUsingEOS) {
+    if (!isUsingOCS2) {
         this->enabledToggle = new tsl::elm::ToggleListItem("Enable", false);
         enabledToggle->setStateChangedListener([this](bool state) {
             Result rc = sysclkIpcSetEnabled(state);
@@ -74,7 +74,7 @@ void MainGui::listUI()
 
     //this->listElement->addItem(new tsl::elm::CategoryHeader("Misc"));
 
-    if (isUsingEOS) {
+    if (isUsingOCS2) {
         tsl::elm::ListItem* miscItem = new tsl::elm::ListItem("Settings");
         miscItem->setClickListener([this](u64 keys) {
             if((keys & HidNpadButton_A) == HidNpadButton_A && this->context)
