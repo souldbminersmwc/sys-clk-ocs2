@@ -13,31 +13,6 @@
 #include "../format.h"
 #include "fatal_gui.h"
 
-class ColoredListItem : public tsl::elm::ListItem
-{
-    tsl::Color color;
-
-public:
-    ColoredListItem(const std::string &text, const std::string &value, bool isMini, tsl::Color c)
-        : tsl::elm::ListItem(text, value, isMini), color(c) {}
-
-    void draw(tsl::gfx::Renderer *renderer) override
-    {
-        tsl::elm::ListItem::draw(renderer);
-
-        u16 tx = this->getX() + 19;
-        u16 ty = this->getY() + (this->getHeight() / 2) + 7; // vertically center-ish
-        u8 fontSize = 23;
-
-        renderer->drawString(this->getText().c_str(), false, tx, ty, fontSize, this->color);
-
-        if (!this->getValue().empty())
-        {
-            renderer->drawString(this->getValue().c_str(), true, this->getX() + this->getWidth() - 20, ty, fontSize, tsl::style::color::ColorText);
-        }
-    }
-};
-
 FreqChoiceGui::FreqChoiceGui(std::uint32_t selectedHz, std::uint32_t *hzList, std::uint32_t hzCount, SysClkModule module, FreqChoiceListener listener)
 {
     this->selectedHz = selectedHz;
@@ -47,34 +22,36 @@ FreqChoiceGui::FreqChoiceGui(std::uint32_t selectedHz, std::uint32_t *hzList, st
     this->listener = listener;
 }
 
-tsl::elm::ListItem *FreqChoiceGui::createFreqListItem(std::uint32_t hz, bool selected, int safety)
+tsl::elm::ListItem* FreqChoiceGui::createFreqListItem(std::uint32_t hz, bool selected, int safety)
 {
-    tsl::elm::ListItem *listItem;
+    std::string text = formatListFreqHz(hz);
+    if (selected) text += " \uE14B";
+
+    tsl::elm::ListItem* listItem = new tsl::elm::ListItem(text, "", false);
 
     switch (safety)
     {
     case 0:
-        listItem = new tsl::elm::ListItem(formatListFreqHz(hz), "", true);
+        listItem->setValueColor(tsl::Color(255, 255, 255, 255));
         break;
     case 1:
-        listItem = new ColoredListItem(formatListFreqHz(hz), "", true, tsl::Color(255, 165, 0, 255));
+        listItem->setValueColor(tsl::Color(255, 165, 0, 255));
         break;
     case 2:
-        listItem = new ColoredListItem(formatListFreqHz(hz), "", true, tsl::Color(255, 0, 0, 255));
+        listItem->setValueColor(tsl::Color(255, 0, 0, 255));
         break;
     }
 
-    listItem->setValue(selected ? "\uE14B" : "");
-
     listItem->setClickListener([this, hz](u64 keys)
-                               {
+    {
         if ((keys & HidNpadButton_A) == HidNpadButton_A && this->listener) {
             if (this->listener(hz)) {
                 tsl::goBack();
             }
             return true;
         }
-        return false; });
+        return false;
+    });
 
     return listItem;
 }
@@ -82,7 +59,7 @@ tsl::elm::ListItem *FreqChoiceGui::createFreqListItem(std::uint32_t hz, bool sel
 void FreqChoiceGui::listUI()
 {
     // Add CategoryHeader based on module
-    std::string moduleName = sysclkFormatModule(this->module, true);
+    std::string moduleName = sysclkFormatModule(this->module, false);
     this->listElement->addItem(new tsl::elm::CategoryHeader(moduleName));
 
     this->listElement->addItem(this->createFreqListItem(0, this->selectedHz == 0, false));
